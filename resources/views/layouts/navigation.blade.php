@@ -70,6 +70,12 @@
                             <a class="dropdown-item" href="{{ route('quiz.history') }}">
                                 <i class="fas fa-history me-1"></i> {{ __('Quiz History') }}
                             </a>
+                            @if(Auth::user()->isAdmin())
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                    <i class="fas fa-shield-alt me-1"></i> Admin Panel
+                                </a>
+                            @endif
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();

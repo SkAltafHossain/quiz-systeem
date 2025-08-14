@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title>Admin Login</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; background: #f4f4f4; }
         .login-container { max-width: 400px; margin: 50px auto; padding: 20px; background: white; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; }
         input[type="email"], input[type="password"] { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
+        button { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; }
         .error { color: red; font-size: 0.9em; margin-top: 5px; }
+        .remember-me { display: flex; align-items: center; margin-bottom: 15px; }
+        .remember-me input { width: auto; margin-right: 10px; }
+        .back-to-home { margin-top: 15px; text-align: center; }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>Admin Login</h2>
         @if($errors->any())
             <div class="error">
                 {{ $errors->first() }}
             </div>
         @endif
         
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('admin.login') }}">
             @csrf
             <div class="form-group">
                 <label for="email">Email</label>
@@ -33,18 +36,24 @@
                 <input id="password" type="password" name="password" required>
             </div>
             
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary w-100">Log in</button>
+            <div class="remember-me">
+                <input type="checkbox" name="remember" id="remember">
+                <label for="remember">Remember me</label>
             </div>
             
-            <div class="text-center mt-3">
-                <p class="mb-0">Are you an admin? 
-                    <a href="{{ route('admin.login') }}" class="text-decoration-none">
-                        Login as Admin
-                    </a>
-                </p>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success w-100">Log in to Admin</button>
             </div>
         </form>
+        
+        <div class="back-to-home text-center mt-3">
+            <p class="mb-0">Not an admin? 
+                <a href="{{ route('login') }}" class="text-decoration-none">
+                    Login as Regular User
+                </a>
+            </p>
+            <a href="{{ url('/') }}" class="text-decoration-none">← Back to Home</a>
+        </div>
     </div>
 </body>
 </html>

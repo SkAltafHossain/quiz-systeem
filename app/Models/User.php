@@ -27,7 +27,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'is_admin',
         'avatar',
         'bio',
     ];
@@ -41,9 +41,22 @@ class User extends Authenticatable
      *
      * @return bool
      */
+    /**
+     * Check if the user is an admin
+     *
+     * @return bool
+     */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        // Debug logging
+        \Log::info('Checking admin status for user:', [
+            'user_id' => $this->id,
+            'email' => $this->email,
+            'is_admin' => $this->is_admin,
+            'is_admin_type' => gettype($this->is_admin)
+        ]);
+        
+        return $this->is_admin === true || $this->is_admin === 1 || $this->is_admin === '1';
     }
 
     /**

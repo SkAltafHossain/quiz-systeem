@@ -16,8 +16,12 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || !Auth::user()->isAdmin()) {
-            return redirect('/dashboard')->with('error', 'You do not have admin access.');
+        if (!Auth::check()) {
+            return redirect()->route('admin.login')->with('error', 'Please log in to access the admin panel.');
+        }
+
+        if (!Auth::user()->isAdmin()) {
+            return redirect()->route('dashboard')->with('error', 'You do not have permission to access the admin panel.');
         }
         
         return $next($request);

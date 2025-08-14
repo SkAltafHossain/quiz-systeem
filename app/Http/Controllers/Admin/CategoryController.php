@@ -33,7 +33,7 @@ class CategoryController extends Controller
      */
     private function getCategoriesDataTable(Request $request)
     {
-        $query = Category::query();
+        $query = Category::withCount('quizzes');
         
         // Apply search filter
         if (!empty($request->search['value'])) {
@@ -49,7 +49,7 @@ class CategoryController extends Controller
             $query->where('is_active', $request->status);
         }
         
-        return DataTables::of($query)
+        return DataTables::eloquent($query)
             ->addIndexColumn()
             ->addColumn('status', function($category) {
                 return $category->is_active 

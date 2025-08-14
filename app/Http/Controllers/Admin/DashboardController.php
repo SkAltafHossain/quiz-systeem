@@ -26,6 +26,18 @@ class DashboardController extends Controller
         $recentUsers = $this->getRecentUsers();
         $recentResults = $this->getRecentResults();
         $topQuizzes = $this->getTopQuizzes();
+        $recentQuizzes = Quiz::with('category')
+            ->latest()
+            ->take(5)
+            ->get();
+            
+        // Prepare data for charts
+        $attemptsDates = collect($attemptsData)->pluck('date')->toArray();
+        $attemptsCount = collect($attemptsData)->pluck('count')->toArray();
+        
+        // Prepare category data for the chart
+        $categoryNames = $quizzesByCategory->pluck('name')->toArray();
+        $categoryCounts = $quizzesByCategory->pluck('quizzes_count')->toArray();
 
         return view('admin.dashboard', [
             'stats' => $stats,
@@ -34,6 +46,11 @@ class DashboardController extends Controller
             'recentUsers' => $recentUsers,
             'recentResults' => $recentResults,
             'topQuizzes' => $topQuizzes,
+            'recentQuizzes' => $recentQuizzes,
+            'attemptsDates' => $attemptsDates,
+            'attemptsCount' => $attemptsCount,
+            'categoryNames' => $categoryNames,
+            'categoryCounts' => $categoryCounts,
         ]);
     }
 

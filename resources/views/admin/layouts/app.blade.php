@@ -309,21 +309,41 @@
                 </ul>
             </li>
             
-            <li class="has-submenu {{ request()->is('admin/questions*') ? 'active' : '' }}">
+            @php
+                // Get the first quiz to use as default in the navigation
+                $quizzes = \App\Models\Quiz::latest()->take(5)->get();
+                $hasQuizzes = $quizzes->isNotEmpty();
+            @endphp
+            
+            <li class="has-submenu {{ request()->is('admin/quizzes/*/questions*') ? 'active' : '' }}">
                 <a href="#" class="menu-toggle">
                     <i class="fas fa-question"></i> Questions
                 </a>
-                <ul class="submenu {{ request()->is('admin/questions*') ? 'show' : '' }}">
-                    <li>
-                        <a href="{{ route('admin.questions.index') }}" class="{{ request()->routeIs('admin.questions.index') ? 'active' : '' }}">
-                            <i class="fas fa-list"></i> All Questions
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.questions.create') }}" class="{{ request()->routeIs('admin.questions.create') ? 'active' : '' }}">
-                            <i class="fas fa-plus"></i> Add New
-                        </a>
-                    </li>
+                <ul class="submenu {{ request()->is('admin/quizzes/*/questions*') ? 'show' : '' }}">
+                    @if($hasQuizzes)
+                        @foreach($quizzes as $quiz)
+                            <li>
+                                <a href="{{ route('admin.quizzes.questions.index', $quiz) }}" class="{{ request()->routeIs('admin.quizzes.questions.index') && request()->route('quiz') == $quiz->id ? 'active' : '' }}">
+                                    <i class="fas fa-list"></i> {{ Str::limit($quiz->title, 20) }}
+                                </a>
+                            </li>
+                        @endforeach
+                        
+                        @if(\App\Models\Quiz::count() > 5)
+                            <li class="divider"></li>
+                            <li>
+                                <a href="{{ route('admin.quizzes.index') }}">
+                                    <i class="fas fa-ellipsis-h"></i> View All Quizzes
+                                </a>
+                            </li>
+                        @endif
+                    @else
+                        <li>
+                            <a href="{{ route('admin.quizzes.create') }}">
+                                <i class="fas fa-plus"></i> Create Your First Quiz
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </li>
             

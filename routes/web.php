@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -21,17 +22,25 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Authentication Routes
+// Guest Authentication Routes
 Route::middleware('guest')->group(function () {
-    // Login Routes
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    // User Login Routes
+    Route::prefix('user')->group(function () {
+        Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
+        Route::post('login', [AuthenticatedSessionController::class, 'store']);
+        
+        // Registration Routes
+        Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::post('register', [RegisterController::class, 'register']);
+    });
     
-    // Registration Routes
-    Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('register', [RegisterController::class, 'register']);
+    // Admin Login Routes
+    Route::prefix('admin')->group(function () {
+        Route::get('login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+        Route::post('login', [AdminLoginController::class, 'login']);
+    });
     
-    // Forgot Password Routes
+    // Forgot Password Routes (for both user and admin)
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
                 ->name('password.request');
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
@@ -42,9 +51,13 @@ Route::middleware('guest')->group(function () {
                 ->name('password.update');
 });
 
-// Logout
+// Logout Routes
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
+
+// Admin Logout
+Route::post('admin/logout', [AdminLoginController::class, 'logout'])
+    ->name('admin.logout');
 
 // Email Verification
 Route::get('verify-email', [EmailVerificationPromptController::class, '__invoke'])
@@ -128,8 +141,11 @@ Route::prefix('admin')
                 // Quiz listing with DataTables
                 Route::get('/', 'index')->name('index');
                 
+                // Show create quiz form
+                Route::get('/create', 'create')->name('create');
+                
                 // Get quiz data for editing
-                Route::get('/{quiz}', 'getQuiz')->name('get');
+                Route::get('/{quiz}/edit', 'edit')->name('edit');
                 
                 // Store new quiz
                 Route::post('/', 'store')->name('store');
@@ -185,6 +201,15 @@ Route::prefix('admin')
             ->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/export', 'export')->name('export');
+            });
+            
+        // User Management
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+            
+        Route::prefix('results')
+            ->name('results.')
+            ->controller(\App\Http\Controllers\Admin\ResultController::class)
+            ->group(function () {
                 Route::get('/{result}', 'show')->name('show');
                 Route::delete('/{result}', 'destroy')->name('destroy');
             });
