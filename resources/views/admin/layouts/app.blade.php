@@ -283,11 +283,6 @@
                             <i class="fas fa-list"></i> All Categories
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.categories.create') }}" class="{{ request()->routeIs('admin.categories.create') ? 'active' : '' }}">
-                            <i class="fas fa-plus"></i> Add New
-                        </a>
-                    </li>
                 </ul>
             </li>
             
@@ -299,11 +294,6 @@
                     <li>
                         <a href="{{ route('admin.quizzes.index') }}" class="{{ request()->routeIs('admin.quizzes.index') ? 'active' : '' }}">
                             <i class="fas fa-list"></i> All Quizzes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.quizzes.create') }}" class="{{ request()->routeIs('admin.quizzes.create') ? 'active' : '' }}">
-                            <i class="fas fa-plus"></i> Add New
                         </a>
                     </li>
                 </ul>

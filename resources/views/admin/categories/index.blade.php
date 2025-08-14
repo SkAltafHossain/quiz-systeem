@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Categories')
+@section('title', 'Categories | ' . config('app.name', 'Quiz System'))
 
 @push('styles')
     <style>
@@ -23,7 +23,7 @@
 @endpush
 
 @section('content')
-    <div class="container-fluid px-4">
+    <div class="container-fluid" style="margin-top: 60px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0">Categories</h1>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
@@ -199,11 +199,15 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '{{ route("admin.categories.index") }}',
+                    url: '{{ route('admin.categories.index') }}',
                     type: 'GET',
                     data: function(d) {
                         // Add any additional filters here
                         d.status = $('#statusFilter').val();
+                        d._token = '{{ csrf_token() }}';
+                    },
+                    error: function(xhr, error, thrown) {
+                        console.error('DataTables error:', error, thrown);
                     }
                 },
                 columns: [

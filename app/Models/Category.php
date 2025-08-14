@@ -17,8 +17,33 @@ class Category extends Model
      */
     protected $fillable = [
         'name',
+        'slug',
+        'description',
+        'image',
         'status',
     ];
+    
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($model) {
+            if (empty($model->slug)) {
+                $model->slug = \Illuminate\Support\Str::slug($model->name);
+            }
+        });
+        
+        static::updating(function ($model) {
+            if ($model->isDirty('name')) {
+                $model->slug = \Illuminate\Support\Str::slug($model->name);
+            }
+        });
+    }
 
     /**
      * The attributes that should be cast.
